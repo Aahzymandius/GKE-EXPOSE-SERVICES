@@ -4,6 +4,8 @@ A ClusterIP service is the default Kubernetes service. It gives you a service in
 
 We are going to create two deployments and check inter pod communication.
 
+![](https://i.stack.imgur.com/1owA5.jpg)
+
 # Deployment 1
 
 Here is the manifest for deployment 1 name my-deployment
@@ -46,7 +48,7 @@ Check created pods
     
 # Deployment 2
 
-kubectl run nginx --image=nginx
+`kubectl run nginx --image=nginx`
 
 Check nginx pods
 
@@ -82,7 +84,7 @@ and install packages and test/curl locally
     nmap localhost
     curl -v localhost:8080
     
-Note: You will notice that [image](https://github.com/GoogleCloudPlatform/kubernetes-engine-samples/blob/master/hello-app/Dockerfile) "gcr.io/google-samples/hello-app:2.0" was defined with port 8080 after doing the nmap and doing a curl -v localhost will give you an error.
+Note: You will notice that [image](https://github.com/GoogleCloudPlatform/kubernetes-engine-samples/blob/master/hello-app/Dockerfile) "gcr.io/google-samples/hello-app:2.0" was defined with port 8080 after doing the nmap and doing a `curl -v localhost` only will give you an error.
 
 # Exposing using clusterIP
 
@@ -100,8 +102,6 @@ Curl from my-deployment pod
 
     curl 10.12.7.114
 
-Through `kubectl apply`
-
 Here is a manifest for a service of type ClusterIP:
 
     apiVersion: v1
@@ -117,6 +117,11 @@ Here is a manifest for a service of type ClusterIP:
       - protocol: TCP
         port: 80
         targetPort: 8080
+     
+ Create deployment
+ 
+    nano my-cip-service.yaml
+    kubectl create -f my-cip-service.yaml
     
  Get cluster-IP
  
@@ -125,11 +130,14 @@ Here is a manifest for a service of type ClusterIP:
      my-cip-service   ClusterIP   10.12.6.178   <none>        80/TCP    7s
      nginx-rwgnr      ClusterIP   10.12.7.114   <none>        80/TCP    13m
 
-Curl from nginx pod
+Exec into the nginx pod and do a curl to the service from there
 
     curl -v 10.12.6.178
 
-Note that that we did not use port 8080 as we have exposed port 80 in manifest file
+Note that that we did not need to add this part `:8080` as we have exposed port 80 in manifest file
+
+
+
 
 
 
